@@ -20,11 +20,13 @@ export async function ensureSchema() {
       accesso         TEXT[] NOT NULL DEFAULT '{}',
       nome            TEXT NOT NULL,
       telefono        TEXT NOT NULL,
+      email           TEXT,
       indirizzo       TEXT NOT NULL,
       stato           TEXT NOT NULL DEFAULT 'in_attesa'
                       CHECK (stato IN ('in_attesa','assegnata','in_corso','risolta')),
       creato_il       TIMESTAMPTZ NOT NULL DEFAULT now()
     );
+    ALTER TABLE richieste ADD COLUMN IF NOT EXISTS email TEXT;
     CREATE INDEX IF NOT EXISTS idx_richieste_stato     ON richieste (stato);
     CREATE INDEX IF NOT EXISTS idx_richieste_creato_il ON richieste (creato_il DESC);
   `);
