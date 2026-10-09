@@ -23,7 +23,7 @@ app.post('/richieste', upload.array('media', 10), async (req, res) => {
     const {
       tipo_problema, urgenza, descrizione = '',
       piano = '', accesso = '[]',
-      nome, telefono, indirizzo,
+      nome, telefono, email = '', indirizzo,
     } = req.body;
 
     if (!tipo_problema || !nome || !telefono || !indirizzo) {
@@ -47,11 +47,11 @@ app.post('/richieste', upload.array('media', 10), async (req, res) => {
     const { rows } = await pool.query(
       `INSERT INTO richieste
          (tipo_problema, urgenza, descrizione, media_urls, piano, accesso,
-          nome, telefono, indirizzo)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+          nome, telefono, email, indirizzo)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
        RETURNING id, stato, creato_il`,
       [tipo_problema, urg, descrizione, mediaUrls, piano, accessoArr,
-       nome, telefono, indirizzo]
+       nome, telefono, email, indirizzo]
     );
 
     res.status(201).json({
@@ -78,7 +78,7 @@ app.get('/richieste', async (req, res) => {
     }
     const { rows } = await pool.query(
       `SELECT id, tipo_problema, urgenza, descrizione, media_urls, piano,
-              accesso, nome, telefono, indirizzo, stato, creato_il
+              accesso, nome, telefono, email, indirizzo, stato, creato_il
          FROM richieste
          ${where}
          ORDER BY urgenza DESC, creato_il DESC`,
